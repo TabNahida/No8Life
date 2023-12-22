@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "*.embeddedhtml": "html",
+        "variant": "cpp",
+        "*.tcc": "cpp",
+        "sstream": "cpp"
+    }
+}

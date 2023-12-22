@@ -1,4 +1,4 @@
-GCC = -std=c++17
+GCC = -std=c++17 -static
 obj = src/main.o \
       src/engine.o
 

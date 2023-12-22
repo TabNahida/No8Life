@@ -6,6 +6,8 @@
 #include <list>
 #include <chrono>
 #include <thread>
+#include <tuple>
+#include <variant>
 using namespace std;
 
 #include <SFML/System.hpp>
