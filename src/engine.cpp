@@ -16,6 +16,11 @@ DivBox::DivBox()
     obj.div.setPointCount(4);
 }
 
+DivBox::DivBox(Vector2f pos,Vector2f size)
+{
+    obj.div.setPointCount(4);
+}
+
 DivBox::~DivBox()
 {   
 
@@ -39,7 +44,10 @@ inline void DivBox::setPosition(Vector2f pos)
 {
     auto unit = *obj.unit;
     obj.div.setPosition(Vector2f(pos.x*unit,pos.y*unit));
+    obj.text.setPosition(Vector2f((pos.x+margin)*unit,(pos.y+margin)*unit));
 }
+
+
 
 GalPage::GalPage()
 {
