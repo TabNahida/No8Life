@@ -147,6 +147,16 @@ inline void DivBox::setFontColor(Color color)
     obj.text.setFillColor(color);
 }
 
+inline ConvexShape* DivBox::getDiv()
+{
+
+}
+
+inline Text* DivBox::getText()
+{
+    
+}
+
 GalPage::GalPage()
 {
     
