@@ -19,6 +19,7 @@ struct RenderObj
     operator Text*();
     RenderObj(ConvexShape* in);
     RenderObj(Text* in);
+
 };
 
 struct Div
@@ -57,12 +58,11 @@ public:
 class GalPage
 {
 private:
-    unordered_map<string,Texture*> textureList;
-    unordered_map<string,pair<size_t,list<GalObject::RenderObj>>> renderList; 
-    Color indexTextColor;
-    Color indexDivColor;
-    Color indexBackgoundColor;
+
 public:
+    unordered_map<string,Texture*> textureList;
+    map<string,list<GalObject::RenderObj>> renderList;
+    void draw(RenderWindow* win);
     GalPage();
     ~GalPage();
 };
@@ -71,16 +71,19 @@ class GalEngine
 {
 private:
     RenderWindow* mainWin;
-    unordered_map<string,Font> fontList;
+    list<GalPage*> renderPage;
     float unit;
+    thread* mainThr;
     void RunWindow();
-    void DefectWindows();
+    void RunDefection();
 public:
+    unordered_map<string,Font> fontList;
+    unordered_map<string,GalPage*> pageList;
     inline void OpenWindow();
     inline void OpenWindow(VideoMode winSize, char32_t* name, Uint32 style = Style::Default);
     inline void setWindowSize(Vector2u winSize);
     inline void setTitle(char32_t* name);
-    inline RenderWindow* getMainWindows();
+    inline RenderWindow* getMainWindow();
     GalEngine(float unit);
     ~GalEngine();
     

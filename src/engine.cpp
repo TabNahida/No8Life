@@ -1,6 +1,8 @@
 #include "engine.hpp"
 using namespace GalObject;
 
+//GalEngine
+
 GalEngine::GalEngine(float unit)
 {
     this->unit = unit;
@@ -15,13 +17,36 @@ void GalEngine::RunWindow()
 {
     while (mainWin->isOpen())
     {
-        
+        mainWin->clear();
+
+        mainWin->display();
     }
 }
 
 void GalEngine::RunDefection()
 {
-    
+    Event event;
+    while (mainWin->pollEvent(event))
+    {
+        switch (event.type)
+        {
+        case Event::Closed:
+            mainWin->close();
+            break;
+        case Event::MouseButtonPressed:
+
+            break;
+        case Event::KeyPressed:
+
+            break;
+        default:
+            break;
+        }
+    }
+    if (mainWin->isOpen())
+    {
+        return RunDefection();
+    }
 }
 
 inline void GalEngine::OpenWindow()
@@ -44,20 +69,12 @@ inline void GalEngine::setTitle(char32_t* name)
     mainWin->setTitle((uint32_t*)(name));
 }
 
-DivBox::DivBox()
+inline RenderWindow* GalEngine::getMainWindow()
 {
-    obj.div.setPointCount(4);
+    return mainWin;
 }
 
-DivBox::DivBox(Vector2f pos,Vector2f size)
-{
-    obj.div.setPointCount(4);
-}
-
-DivBox::~DivBox()
-{   
-
-}
+//RenderObj
 
 RenderObj::operator ConvexShape*()
 {
@@ -93,6 +110,23 @@ RenderObj::RenderObj(Text* in)
 {
     type = text;
     object.text = in;
+}
+
+//DivBox
+
+DivBox::DivBox()
+{
+    obj.div.setPointCount(4);
+}
+
+DivBox::DivBox(Vector2f pos,Vector2f size)
+{
+    obj.div.setPointCount(4);
+}
+
+DivBox::~DivBox()
+{   
+
 }
 
 inline void DivBox::setColor(Color color)
@@ -160,6 +194,17 @@ inline ConvexShape* DivBox::getDiv()
 inline Text* DivBox::getText()
 {
     return &obj.text;
+}
+
+void GalPage::draw(RenderWindow* win)
+{
+    for (auto rax : renderList)
+    {
+        for (auto rbx : rax.second)
+        {
+            
+        }
+    }
 }
 
 GalPage::GalPage()
