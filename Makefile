@@ -6,4 +6,4 @@ obj = src/main.o \
 	g++ $(GCC) -c $< -o $@
 
 no8life: $(obj)
-	g++ -o $@ $<
+	g++ -o $@ $< -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network
