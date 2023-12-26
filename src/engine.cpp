@@ -11,12 +11,17 @@ GalEngine::~GalEngine()
     delete mainWin;
 }
 
-inline void GalEngine::RunWindow()
+void GalEngine::RunWindow()
 {
     while (mainWin->isOpen())
     {
         
     }
+}
+
+void GalEngine::RunDefection()
+{
+    
 }
 
 inline void GalEngine::OpenWindow()
@@ -149,12 +154,12 @@ inline void DivBox::setFontColor(Color color)
 
 inline ConvexShape* DivBox::getDiv()
 {
-
+    return &obj.div;
 }
 
 inline Text* DivBox::getText()
 {
-    
+    return &obj.text;
 }
 
 GalPage::GalPage()

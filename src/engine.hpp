@@ -74,6 +74,7 @@ private:
     unordered_map<string,Font> fontList;
     float unit;
     void RunWindow();
+    void DefectWindows();
 public:
     inline void OpenWindow();
     inline void OpenWindow(VideoMode winSize, char32_t* name, Uint32 style = Style::Default);
