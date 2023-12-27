@@ -18,12 +18,15 @@ void GalEngine::RunWindow()
     while (mainWin->isOpen())
     {
         mainWin->clear();
-
+        for (auto rax : renderPage)
+        {
+            rax->draw(mainWin);
+        }
         mainWin->display();
     }
 }
 
-void GalEngine::RunDefection()
+void GalEngine::RunDetection()
 {
     Event event;
     while (mainWin->pollEvent(event))
@@ -45,7 +48,7 @@ void GalEngine::RunDefection()
     }
     if (mainWin->isOpen())
     {
-        return RunDefection();
+        return RunDetection();
     }
 }
 
@@ -104,12 +107,14 @@ RenderObj::RenderObj(ConvexShape* in)
 {
     type = convex;
     object.convex = in;
+    draw = [&](RenderWindow* win){win->draw(*object.convex);};
 }
 
 RenderObj::RenderObj(Text* in)
 {
     type = text;
     object.text = in;
+    draw = [&](RenderWindow* win){win->draw(*object.text);};
 }
 
 //DivBox
@@ -196,13 +201,15 @@ inline Text* DivBox::getText()
     return &obj.text;
 }
 
+//GalPage
+
 void GalPage::draw(RenderWindow* win)
 {
     for (auto rax : renderList)
     {
         for (auto rbx : rax.second)
         {
-            
+            rbx.draw(win);
         }
     }
 }

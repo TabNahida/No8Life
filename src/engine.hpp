@@ -19,8 +19,14 @@ struct RenderObj
     operator Text*();
     RenderObj(ConvexShape* in);
     RenderObj(Text* in);
-
+    function<void(RenderWindow*)> draw;
 };
+
+struct DetectionObj
+{
+    
+};
+
 
 struct Div
 {
@@ -53,6 +59,15 @@ public:
     ~DivBox();
 };
 
+class DivBoxButton : public DivBox
+{
+protected:
+    
+public:
+    DivBoxButton();
+    DivBoxButton(Vector2f pos, Vector2f size);
+};
+
 }
 
 class GalPage
@@ -62,6 +77,7 @@ private:
 public:
     unordered_map<string,Texture*> textureList;
     map<string,list<GalObject::RenderObj>> renderList;
+    map<string,GalObject::DetectionObj> detectionList;
     void draw(RenderWindow* win);
     GalPage();
     ~GalPage();
@@ -75,7 +91,7 @@ private:
     float unit;
     thread* mainThr;
     void RunWindow();
-    void RunDefection();
+    void RunDetection();
 public:
     unordered_map<string,Font> fontList;
     unordered_map<string,GalPage*> pageList;

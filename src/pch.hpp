@@ -9,6 +9,7 @@
 #include <tuple>
 #include <variant>
 #include <utility>
+#include <memory>
 using namespace std;
 
 #include <SFML/System.hpp>
