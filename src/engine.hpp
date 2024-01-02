@@ -24,7 +24,11 @@ struct RenderObj
 
 struct DetectionObj
 {
-    
+    FloatRect detectBox;
+    function<void()> hover;
+    function<void()> press;
+    bool isHover(Vector2f input);
+    bool isPress(Vector2f input);
 };
 
 
@@ -32,40 +36,36 @@ struct Div
 {
     ConvexShape div;
     Text text;
-    float* unit;
-    
 };
 
 class DivBox
 {
 protected:
     Div obj;
-    float margin = 0; 
+    float margin = 0;
 public:
-    inline void setColor(Color color);
-    inline void setUnit(float* unit);
-    inline void setSize(Vector2f size);
-    inline void setPosition(Vector2f pos);
-    inline void setTexture(Texture* texture);
-    inline void setMargin(float margin);
-    inline void setString(char32_t* string);
-    inline void setFont(Font* font);
-    inline void setFontSize(float size);
-    inline void setFontColor(Color color);
-    inline ConvexShape* getDiv();
-    inline Text* getText();
+    void setColor(Color color);
+    void setTexture(Texture* texture);
+    void setMargin(float margin);
+    void setString(char32_t* string);
+    void setFont(Font* font);
+    void setFontSize(float size);
+    void setFontColor(Color color);
+    ConvexShape* getDiv();
+    Text* getText();
     DivBox();
-    DivBox(Vector2f pos,Vector2f size);
     ~DivBox();
 };
 
 class DivBoxButton : public DivBox
 {
 protected:
-    
+    DetectionObj buutonBox;
 public:
+    function<void()> runFuc;
     DivBoxButton();
     DivBoxButton(Vector2f pos, Vector2f size);
+    ~DivBoxButton();
 };
 
 }
@@ -79,6 +79,8 @@ public:
     map<string,list<GalObject::RenderObj>> renderList;
     map<string,GalObject::DetectionObj> detectionList;
     void draw(RenderWindow* win);
+    void buttonDetect(Vector2f input);
+    void hoverDetect(Vector2f input);
     GalPage();
     ~GalPage();
 };
@@ -87,20 +89,20 @@ class GalEngine
 {
 private:
     RenderWindow* mainWin;
-    list<GalPage*> renderPage;
-    float unit;
-    thread* mainThr;
+    thread* mainWinThr;
+    thread* mainDetectThr;
     void RunWindow();
     void RunDetection();
 public:
-    unordered_map<string,Font> fontList;
+    list<GalPage*> renderPage;
+    unordered_map<string,Font*> fontList;
     unordered_map<string,GalPage*> pageList;
-    inline void OpenWindow();
-    inline void OpenWindow(VideoMode winSize, char32_t* name, Uint32 style = Style::Default);
-    inline void setWindowSize(Vector2u winSize);
-    inline void setTitle(char32_t* name);
-    inline RenderWindow* getMainWindow();
-    GalEngine(float unit);
+    void OpenWindow();
+    void OpenWindow(VideoMode winSize, char32_t* name, Uint32 style  = Style::Default);
+    void setWindowSize(Vector2u winSize);
+    void setTitle(char32_t* name);
+    void WaitEnd();
+    RenderWindow* getMainWindow();
+    GalEngine();
     ~GalEngine();
-    
 };

@@ -3,9 +3,9 @@ using namespace GalObject;
 
 //GalEngine
 
-GalEngine::GalEngine(float unit)
+GalEngine::GalEngine()
 {
-    this->unit = unit;
+    
 }
 
 GalEngine::~GalEngine()
@@ -18,7 +18,12 @@ void GalEngine::RunWindow()
     while (mainWin->isOpen())
     {
         mainWin->clear();
-        for (auto rax : renderPage)
+        if (renderPage.size() == 0)
+        {
+            mainWin->display();
+            continue;
+        }
+        for (auto& rax : renderPage)
         {
             rax->draw(mainWin);
         }
@@ -28,51 +33,74 @@ void GalEngine::RunWindow()
 
 void GalEngine::RunDetection()
 {
+    while (mainWin->isOpen())
+    {
     Event event;
     while (mainWin->pollEvent(event))
     {
+        auto rax = Mouse::getPosition(*mainWin);
         switch (event.type)
         {
         case Event::Closed:
             mainWin->close();
             break;
         case Event::MouseButtonPressed:
-
+            if (renderPage.size() == 0)
+            {
+                break;
+            }
+            renderPage.back()->buttonDetect(Vector2f(rax.x,rax.y));
             break;
         case Event::KeyPressed:
 
+            break;
+        case Event::MouseMoved:
+            if (renderPage.size() == 0)
+            {
+                break;
+            }
+            renderPage.back()->hoverDetect(Vector2f(rax.x,rax.y));
             break;
         default:
             break;
         }
     }
-    if (mainWin->isOpen())
-    {
-        return RunDetection();
     }
 }
 
-inline void GalEngine::OpenWindow()
+ void GalEngine::OpenWindow()
 {
     mainWin = new RenderWindow;
+    mainWin->setFramerateLimit(60);
+    mainWinThr = new thread(&GalEngine::RunWindow,this);
+    mainDetectThr = new thread(&GalEngine::RunDetection,this);
 }
 
-inline void GalEngine::OpenWindow(VideoMode winSize, char32_t* name, Uint32 style)
+ void GalEngine::OpenWindow(VideoMode winSize, char32_t* name, Uint32 style)
 {
     mainWin = new RenderWindow(winSize,(uint32_t*)(name),style);
+    mainWin->setFramerateLimit(60);
+    mainWinThr = new thread(&GalEngine::RunWindow,this);
+    mainDetectThr = new thread(&GalEngine::RunDetection,this);
 }
 
-inline void GalEngine::setWindowSize(Vector2u winSize)
+ void GalEngine::setWindowSize(Vector2u winSize)
 {
     mainWin->setSize(winSize);
 }
 
-inline void GalEngine::setTitle(char32_t* name)
+ void GalEngine::setTitle(char32_t* name)
 {
     mainWin->setTitle((uint32_t*)(name));
 }
 
-inline RenderWindow* GalEngine::getMainWindow()
+void GalEngine::WaitEnd()
+{
+    mainWinThr->join();
+    mainDetectThr->join();
+}
+
+ RenderWindow* GalEngine::getMainWindow()
 {
     return mainWin;
 }
@@ -117,14 +145,31 @@ RenderObj::RenderObj(Text* in)
     draw = [&](RenderWindow* win){win->draw(*object.text);};
 }
 
+//DetectionObj
+
+ bool DetectionObj::isHover(Vector2f input)
+{
+    if (detectBox.contains(input))
+    {
+        hover();
+        return true;
+    }
+    return false;
+}
+
+ bool DetectionObj::isPress(Vector2f input)
+{
+    if (detectBox.contains(input))
+    {
+        press();
+        return true;
+    }
+    return false;
+}
+
 //DivBox
 
 DivBox::DivBox()
-{
-    obj.div.setPointCount(4);
-}
-
-DivBox::DivBox(Vector2f pos,Vector2f size)
 {
     obj.div.setPointCount(4);
 }
@@ -134,69 +179,47 @@ DivBox::~DivBox()
 
 }
 
-inline void DivBox::setColor(Color color)
+ void DivBox::setColor(Color color)
 {
     obj.div.setFillColor(color);
 }
 
-inline void DivBox::setUnit(float* unit)
-{
-    obj.unit = unit;
-}
-
-inline void DivBox::setSize(Vector2f size)
-{
-    auto unit = *obj.unit;
-    obj.div.setPoint(0,Vector2f(0,0));
-    obj.div.setPoint(1,Vector2f(size.x,0));
-    obj.div.setPoint(2,Vector2f(size.x*unit,size.y*unit));
-    obj.div.setPoint(3,Vector2f(0,size.y*unit));
-}
-
-inline void DivBox::setPosition(Vector2f pos)
-{
-    auto unit = *obj.unit;
-    obj.div.setPosition(Vector2f(pos.x*unit,pos.y*unit));
-    obj.text.setPosition(Vector2f((pos.x+margin)*unit,(pos.y+margin)*unit));
-}
-
-inline void DivBox::setTexture(Texture* texture)
+ void DivBox::setTexture(Texture* texture)
 {
     obj.div.setTexture(texture);
 }
 
-inline void DivBox::setMargin(float margin)
+ void DivBox::setMargin(float margin)
 {
     this->margin = margin;
 }
 
-inline void DivBox::setString(char32_t* string)
+ void DivBox::setString(char32_t* string)
 {
     obj.text.setString((uint32_t*)(string));
 }
 
-inline void DivBox::setFont(Font* font)
+ void DivBox::setFont(Font* font)
 {
     obj.text.setFont(*font);
 }
 
-inline void DivBox::setFontSize(float size)
+ void DivBox::setFontSize(float size)
 {
-    auto unit = *obj.unit;
-    obj.text.setCharacterSize(unit*size);
+    obj.text.setCharacterSize(size);
 }
 
-inline void DivBox::setFontColor(Color color)
+ void DivBox::setFontColor(Color color)
 {
     obj.text.setFillColor(color);
 }
 
-inline ConvexShape* DivBox::getDiv()
+ ConvexShape* DivBox::getDiv()
 {
     return &obj.div;
 }
 
-inline Text* DivBox::getText()
+ Text* DivBox::getText()
 {
     return &obj.text;
 }
@@ -205,11 +228,35 @@ inline Text* DivBox::getText()
 
 void GalPage::draw(RenderWindow* win)
 {
-    for (auto rax : renderList)
+    for (auto& rax : renderList)
     {
-        for (auto rbx : rax.second)
+        for (auto& rbx : rax.second)
         {
             rbx.draw(win);
+        }
+    }
+}
+
+void GalPage::buttonDetect(Vector2f input)
+{
+    for (auto& rax : detectionList)
+    {
+        if (rax.second.isPress(input))
+        {
+            rax.second.press();
+            return;
+        }
+    }
+}
+
+void GalPage::hoverDetect(Vector2f input)
+{
+    for (auto& rax : detectionList)
+    {
+        if (rax.second.isHover(input))
+        {
+            rax.second.hover();
+            return;
         }
     }
 }

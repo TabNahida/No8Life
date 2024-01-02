@@ -3,6 +3,8 @@
         "*.embeddedhtml": "html",
         "variant": "cpp",
         "*.tcc": "cpp",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "iostream": "cpp",
+        "ostream": "cpp"
     }
 }
