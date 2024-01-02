@@ -33,9 +33,15 @@ void cleanupTextureList()
 void setupBGMList()
 {
     bgmList["Sad"] = new Music;
-    bgmList["Sad"]->openFromFile("resource/Music/悲伤.wav");
+    bgmList["Sad"]->openFromFile("resource/Music/悲伤.ogg");
     bgmList["Sad"]->setLoop(true);
-    
+    bgmList["Groaning"] = new Music;
+    bgmList["Groaning"]->openFromFile("resource/Music/病中吟.ogg");
+    bgmList["Groaning"]->setLoop(true);
+    bgmList["Erpquan"] = new Music;
+    bgmList["Erquan"]->openFromFile("resource/Music/二泉映月.ogg");
+    bgmList["Erquan"]->setLoop(true);
+    bgmList["Satisfy"] = new Music;
 }
 
 void cleanupBGM()
