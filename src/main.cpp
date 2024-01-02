@@ -42,6 +42,8 @@ void setupBGMList()
     bgmList["Erquan"]->openFromFile("resource/Music/二泉映月.ogg");
     bgmList["Erquan"]->setLoop(true);
     bgmList["Satisfy"] = new Music;
+    bgmList["Satisfy"]->openFromFile("resource/Music/双脚踏上幸福路.ogg");
+    
 }
 
 void cleanupBGM()
