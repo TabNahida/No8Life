@@ -1,8 +1,7 @@
 #include "pch.hpp"
-#include "engine.hpp"
+#include "EasyRender.hpp"
+//#include "engine.hpp"
 
-GalEngine game;
-GalPage enter;
 unordered_map<string,Music*> bgmList;
 unordered_map<string,Texture*> textureList;
 
@@ -15,7 +14,16 @@ void setupTextureList()
     texture["Street"]->loadFromFile("resource/Image/大街.jpg");
     texture["KneelNo8"] = new Texture;
     texture["KneelNo8"]->loadFromFile("resource/Image/跪八.png");
-
+    texture["ChopNo8"] = new Texture;
+    texture["ChopNo8"]->loadFromFile("resource/Image/砍八.png");
+    texture["VomitNo8"] = new Texture;
+    texture["VomitNo8"]->loadFromFile("resource/Image/呕八.png");
+    texture["NormalNo8"] = new Texture;
+    texture["NormalNo8"]->loadFromFile("resource/Image/平八.png");
+    texture["Tsuchiya"] = new Texture;
+    texture["Tsuchiya"]->loadFromFile("resource/Image/土屋.jpg");
+    texture["Building"] = new Texture;
+    texture["Building"]->loadFromFile("resource/Image/住宅楼.jpg");
 }
 
 void cleanupTextureList()
@@ -43,7 +51,10 @@ void setupBGMList()
     bgmList["Erquan"]->setLoop(true);
     bgmList["Satisfy"] = new Music;
     bgmList["Satisfy"]->openFromFile("resource/Music/双脚踏上幸福路.ogg");
-    
+    bgmList["Satisfy"]->setLoop(true);
+    bgmList["Heart"] = new Music;
+    bgmList["Heart"]->openFromFile("resource/Music/追梦赤子心.ogg");
+    bgmList["Heart"]->setLoop(true);
 }
 
 void cleanupBGM()
@@ -60,25 +71,16 @@ void cleanupBGM()
 
 void setupEnterPage()
 {
-    using namespace GalObject;
-    auto& texture = enter.textureList;
-    auto& render = enter.textureList;
-    auto& detect = enter.detectionList;
-    texture["WC"] = textureList["WC"];
     
 }
 
 int main()
 {
-    game.fontList["index"] = new Font;
-    game.fontList["index"]->loadFromFile("resource/Font/SmileySans-Oblique.ttf");
-    game.pageList["enter"] = &enter;
+
     setupBGMList();
     setupTextureList();
     setupEnterPage();
-    game.OpenWindow(VideoMode(800,600),U"八号人生");
-
-    game.WaitEnd();
+    
     cleanupBGM();
     cleanupTextureList();
     return 0;

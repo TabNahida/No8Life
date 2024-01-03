@@ -33,9 +33,9 @@ void GalEngine::RunWindow()
 
 void GalEngine::RunDetection()
 {
+    Event event;
     while (mainWin->isOpen())
     {
-    Event event;
     while (mainWin->pollEvent(event))
     {
         auto rax = Mouse::getPosition(*mainWin);
@@ -222,6 +222,31 @@ DivBox::~DivBox()
  Text* DivBox::getText()
 {
     return &obj.text;
+}
+
+//
+
+DivBoxButton::DivBoxButton()
+{
+    buttonBox.press = [&]
+    {
+        runFuc();
+    };
+}
+
+DivBoxButton::DivBoxButton(Vector2f pos, Vector2f size)
+{
+    obj.div.setPosition(pos);
+    buttonBox.press = [&]
+    {
+        runFuc();
+    };
+    buttonBox.detectBox.intersects(obj.div.getLocalBounds());
+}
+
+DivBoxButton::~DivBoxButton()
+{
+
 }
 
 //GalPage

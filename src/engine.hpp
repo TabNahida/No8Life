@@ -60,7 +60,7 @@ public:
 class DivBoxButton : public DivBox
 {
 protected:
-    DetectionObj buutonBox;
+    DetectionObj buttonBox;
 public:
     function<void()> runFuc;
     DivBoxButton();
