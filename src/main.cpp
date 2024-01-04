@@ -1,9 +1,12 @@
 #include "pch.hpp"
-#include "EasyRender.hpp"
+//#include "EasyRender.hpp"
 //#include "engine.hpp"
 
 unordered_map<string,Music*> bgmList;
 unordered_map<string,Texture*> textureList;
+RenderWindow* window;
+function<void()> draw;
+function<void(Event event)> detect;
 
 void setupTextureList()
 {
@@ -69,17 +72,47 @@ void cleanupBGM()
     }
 }
 
+struct
+{
+    map<string,RectangleShape*> rect;
+}EnterPage;
+
+
 void setupEnterPage()
 {
-    
+    auto& rect = EnterPage.rect;
+    rect["bgImage"] = new RectangleShape();
+}
+
+void drawEnterPage()
+{
+
+}
+
+void detectEnterPage(Event event)
+{
+
 }
 
 int main()
 {
-
+    window = new RenderWindow(VideoMode(800,600),(uint32_t*)(U"八号人生"));
+    draw = drawEnterPage;
+    detect = detectEnterPage;
     setupBGMList();
     setupTextureList();
     setupEnterPage();
+    while (window->isOpen())
+    {
+        Event event;
+        while (window->pollEvent(event))
+        {
+            detect(event);
+        }
+        window->clear();
+        draw();
+        window->display();
+    }
     
     cleanupBGM();
     cleanupTextureList();
