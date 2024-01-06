@@ -50,8 +50,8 @@ void setupBGMList()
     bgmList["Groaning"]->openFromFile("resource/Music/病中吟.ogg");
     bgmList["Groaning"]->setLoop(true);
     bgmList["Erpquan"] = new Music;
-    bgmList["Erquan"]->openFromFile("resource/Music/二泉映月.ogg");
-    bgmList["Erquan"]->setLoop(true);
+    bgmList["Erpquan"]->openFromFile("resource/Music/二泉映月.ogg");
+    bgmList["Erpquan"]->setLoop(true);
     bgmList["Satisfy"] = new Music;
     bgmList["Satisfy"]->openFromFile("resource/Music/双脚踏上幸福路.ogg");
     bgmList["Satisfy"]->setLoop(true);
@@ -74,34 +74,72 @@ void cleanupBGM()
 
 struct
 {
+    list<RectangleShape*> rectList;
     map<string,RectangleShape*> rect;
-}EnterPage;
-
 
 void setupEnterPage()
 {
-    auto& rect = EnterPage.rect;
-    rect["bgImage"] = new RectangleShape();
+    RectangleShape* rax;
+    rax = new RectangleShape;
+    rax->setPosition(Vector2f(0,0));
+    rax->setSize(Vector2f(1080,720));
+    rax->setTexture(textureList["WC"]);
+    rax->setTextureRect(IntRect(0,0,960,540));
+    rectList.push_back(rax);
+    rax = new RectangleShape;
+    rax->setPosition(Vector2f(300,270));
+    rax->setSize(Vector2f(450,480));
+    rax->setTexture(textureList["NormalNo8"]);
+    rax->setTextureRect(IntRect(0,0,750,800));
+    rect["No8"] = rax;
+    rectList.push_back(rax);
+}
+
+void cleanupEnterPage()
+{
+    for (auto& rax : rectList)
+    {
+        delete rax;
+    }
 }
 
 void drawEnterPage()
 {
-
+    for (auto& rax : rectList)
+    {
+        window->draw(*rax);
+    }
 }
 
 void detectEnterPage(Event event)
 {
+    switch (event.type)
+    {
+    case Event::Closed:
+        window->close();
+        break;
+    case Event::MouseButtonPressed:
 
+        break;
+    case Event::MouseMoved:
+
+        break;
+    default:
+        break;
+    }
 }
+
+}EnterPage;
 
 int main()
 {
-    window = new RenderWindow(VideoMode(800,600),(uint32_t*)(U"八号人生"));
-    draw = drawEnterPage;
-    detect = detectEnterPage;
+    window = new RenderWindow(VideoMode(1080,720),(uint32_t*)(U"八号人生"));
+    draw = []{EnterPage.drawEnterPage();};
+    detect = [](Event event){EnterPage.detectEnterPage(event);};
     setupBGMList();
     setupTextureList();
-    setupEnterPage();
+    EnterPage.setupEnterPage();
+    window->setFramerateLimit(60);
     while (window->isOpen())
     {
         Event event;
@@ -109,6 +147,7 @@ int main()
         {
             detect(event);
         }
+        
         window->clear();
         draw();
         window->display();
